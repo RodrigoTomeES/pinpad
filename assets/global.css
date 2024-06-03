@@ -24,7 +24,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   font-family: "Adobe Clean";
-  background-image: url("/assets/background-wall.webp");
+  background-image: url("./assets/background-wall.webp");
   background-size: cover;
   background-repeat: repeat;
 }
