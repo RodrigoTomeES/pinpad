@@ -1,0 +1,319 @@
+/*
+  1. Use a more-intuitive box-sizing model.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/*
+  2. Remove default margin
+*/
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/*
+  Typographic tweaks!
+  3. Add accessible line-height
+  4. Improve text rendering
+*/
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-family: "Adobe Clean";
+  background-image: url("/assets/background-wall.webp");
+  background-size: cover;
+  background-repeat: repeat;
+}
+
+/*
+  5. Improve media defaults
+*/
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/*
+  6. Remove built-in form typography styles
+*/
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/*
+  7. Avoid text overflows
+*/
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+dialog {
+  border: 2px solid #949494;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.5),
+    0px 8px 16px 8px rgba(0, 0, 0, 0.15);
+  padding: 72px 16px;
+  width: calc(100vw - 32px * 2);
+  color: #747474;
+  text-align: center;
+
+  &::backdrop {
+    background: #00000025;
+    backdrop-filter: blur(4px);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 500;
+    line-height: normal;
+    margin-bottom: 30px;
+  }
+
+  p {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 30px;
+    max-width: 380px;
+    margin-inline: auto;
+  }
+
+  svg {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    border: none;
+    cursor: pointer;
+    width: 30px;
+    aspect-ratio: 1 / 1;
+  }
+
+  @media (min-width: 835px) {
+    padding: 43px 80px;
+    max-width: 835px;
+
+    h1 {
+      font-size: 54px;
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+    #close {
+      top: 28px;
+      right: 28px;
+    }
+  }
+}
+
+.panel {
+  --box-shadow-size-bottom: 14px;
+  width: 300px;
+  border-radius: 18px;
+  background: linear-gradient(270deg, #222b3d 0%, #6a758b 100%);
+  box-shadow: 0px 4px 8px 1px rgba(0, 0, 0, 0.25),
+    0px 2px 3px 0px rgba(0, 0, 0, 0.7),
+    0px calc(var(--box-shadow-size-bottom) * -1) 0px 0px #161c27 inset;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding-block-end: var(--box-shadow-size-bottom);
+
+  @media (min-width: 835px) {
+    width: 380px;
+  }
+
+  .panel__container {
+    width: calc(100% - 20px * 2);
+    border-top: 1px solid #68748a;
+    border-right: 1px solid #68748a;
+    border-bottom: 1px solid #68748a;
+    background: #364157;
+    margin-inline: auto;
+    padding: 24px 16px;
+  }
+
+  .panel__display {
+    display: block;
+    margin-block-end: 30px;
+    position: relative;
+    font-family: DS-Digital;
+    font-size: 50px;
+    font-weight: 700;
+    line-height: normal;
+    text-align: left;
+    color: #5d6a69;
+
+    & input {
+      outline: none;
+      color: inherit;
+      width: 100%;
+      padding: 24px 55px 24px 14px;
+      border-radius: 5px;
+      border: 2px solid #242d3f;
+      background: #e5f3f2;
+      height: 118px;
+      box-shadow: 0px 3px 6px 3px rgba(0, 0, 0, 0.6) inset;
+
+      &[type="text"] ~ .panel__hidden {
+        display: none;
+      }
+
+      &[type="password"] ~ .panel__show {
+        display: none;
+      }
+    }
+
+    & svg {
+      position: absolute;
+      top: 50%;
+      right: 24px;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    & .panel__message {
+      display: none;
+      place-items: center;
+      position: absolute;
+      inset: 0;
+      box-shadow: 0px 3px 6px 3px rgba(0, 0, 0, 0.6) inset;
+
+      &[data-show="true"] {
+        display: grid;
+      }
+
+      &[data-theme="error"] {
+        background-color: #FFE4E4;
+      }
+
+      &[data-theme="success"] {
+        background-color: #DEF4DA;
+      }
+    }
+
+
+    & :is(.panel__error[data-show="false"], .panel__error) {
+      display: hidden;
+    }
+
+    @media (min-width: 835px) {
+      & input {
+        font-size: 64px;
+        padding: 24px 80px 24px 26px;
+      }
+    }
+  }
+
+  .panel__buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px 12px;
+
+    @media (min-width: 835px) {
+      gap: 20px 16px;
+    }
+  }
+
+  .panel__button {
+    height: 62px;
+    border-radius: 6px;
+    border: 2px solid rgba(0, 0, 0, 0.7);
+    box-shadow: 0px 0px 1px 1px rgba(143, 165, 208, 0.5),
+      0px 0px 0px 3px rgba(211, 226, 255, 0.19) inset,
+      0px 0px 5px 2px rgba(105, 136, 198, 0.3) inset;
+    color: #fff;
+    text-align: center;
+    text-shadow: 2px 3px 0px rgba(0, 0, 0, 0.4);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: normal;
+
+    @media (min-width: 835px) {
+      height: 78px;
+    }
+  }
+
+  .panel__digit {
+    background: linear-gradient(180deg, #414d66 0%, #161c27 100%);
+    transition-property: background-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+
+    &:active {
+      background: linear-gradient(180deg, #7488b1 0%, #3f506e 100%);
+    }
+  }
+
+  .panel__c {
+    background: linear-gradient(180deg, #ef6476 0%, #cf5060 100%);
+
+    &:active {
+      background: linear-gradient(180deg, #7488b1 0%, #3f506e 100%);
+    }
+  }
+
+  .panel__save {
+    background: linear-gradient(180deg, #6aecb0 0%, #42a484 100%);
+    font-size: 26px;
+
+    @media (min-width: 835px) {
+      font-size: 32px;
+    }
+
+    &:active {
+      background: linear-gradient(180deg, #7488b1 0%, #3f506e 100%);
+    }
+  }
+}
+
+.notification {
+  --translateY: -100%;
+  transform: translateY(var(--translateY));
+  max-height: max-content;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-block: 8px;
+  padding-inline: 30px;
+  border-bottom: 2px solid #c2af03;
+  background-color: #ffd600;
+  text-align: center;
+  color: #635905;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: normal;
+  transition: all 230ms cubic-bezier(0.21, 1.02, 0.73, 1) 0s;
+  
+  &:before {
+    content: '¡El pin no es correcto, te quedan ' attr(tries) ' intentos!'
+  }
+}
