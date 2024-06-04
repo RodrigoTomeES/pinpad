@@ -22,6 +22,7 @@ const digits = $$(".panel__digit");
 const hidden = $(".panel__hidden");
 const show = $(".panel__show");
 const message = $(".panel__message");
+const form = $(".panel__container");
 
 // Local storage logic
 const PIN_LOCAL_STORAGE = "pin";
@@ -77,16 +78,35 @@ const hideMessage = () => {
   message.dataset.theme = "";
 };
 
-hidden.addEventListener("click", () => (display.type = "text"));
-show.addEventListener("click", () => (display.type = "password"));
-clear.addEventListener("click", () => (display.value = ""));
-save.addEventListener("click", () => {
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  display.disabled = true;
+
+  const value = display.value;
+
+  if (value.length < 6) {
+    showMessage("Incomplete", "error");
+    setTimeout(hideMessage, 1000);
+    return;
+  }
+
+  if (!isNumber(value)) {
+    showMessage("Not number", "error");
+    setTimeout(hideMessage, 1000);
+    return;
+  }
+
   if (!hasPin()) {
     showMessage("Saved", "success");
-    setTimeout(hideMessage, 1000);
-    setPin(display.value);
+    setTimeout(() => {
+      hideMessage();
+      pin.showModal();
+      display.disabled = false;
+    }, 1000);
+    setPin(value);
   } else {
-    if (display.value === getPin()) {
+    if (value === getPin()) {
       removePin();
       removeTries();
       showMessage("Correct", "success");
@@ -108,26 +128,33 @@ save.addEventListener("click", () => {
     setTimeout(() => {
       hideMessage();
       notification.style.setProperty("--translateY", "-100%");
-    }, 2000);
 
-    if (!hasTries()) {
-      removePin();
-      removeTries();
-      window.location.replace("https://policia.es/_es/index.php");
-    }
+      if (!hasTries()) {
+        removePin();
+        removeTries();
+        window.location.replace("https://policia.es/_es/index.php");
+      }
+
+
+      display.disabled = false;
+    }, 2000);
   }
 
   display.value = "";
 });
+hidden.addEventListener("click", () => (display.type = "text"));
+show.addEventListener("click", () => (display.type = "password"));
+clear.addEventListener("click", () => (display.value = ""));
 
 digits.forEach((button) => {
   button.addEventListener("click", () => {
-    if (display.value.length >= 6) return;
     if (!isNumber(display.value + button.textContent)) {
       showMessage("Not number", "error");
       setTimeout(hideMessage, 1000);
       return;
     }
+    if (display.value.length >= 6) return;
+
     display.value += button.textContent;
   });
 });
@@ -135,14 +162,16 @@ digits.forEach((button) => {
 display.addEventListener("keydown", (event) => {
   event.preventDefault();
 
-  if (event.target.value >= 6) return;
-  if (!isNumber(event.target.value)) {
+  const value = event.target.value;
+
+  if (!isNumber(value) && value !== "") {
     showMessage("Not number", "error");
     setTimeout(hideMessage, 1000);
     return;
   }
+  if (value >= 6) return;
 
-  display.value = event.target.value;
+  display.value = value;
 });
 
 document.addEventListener("keydown", (event) => {
